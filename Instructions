@@ -1,0 +1,13 @@
+Installation:
+There isn't really any installation. Just save the bash script somewhere and go to configuration.
+
+Configuration:
+1. Edit the commands.bash file with your favorite text editor and set some variables in the top of the file
+2. Save the file
+
+Usage:
+If the file is executable:
+./commands.bash
+
+If it's not executable:
+bash commands.bash
