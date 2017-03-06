@@ -207,7 +207,7 @@ done
 }
 
 function mainMenu {
-OPTIONS="Give Season Regen Rain Player"
+OPTIONS="Give Season Regen Rain Player Quit"
 select opt in $OPTIONS; do
 	if [ "$opt" = "Give" ]; then
 		give
@@ -221,6 +221,8 @@ select opt in $OPTIONS; do
 	elif [ "$opt" = "Rain" ]; then
 		rain
 		exit
+	elif [ "$opt" = "Quit" ]; then
+		exit 0
 	else
 		echo invalid option
 		exit
