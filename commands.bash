@@ -227,6 +227,9 @@ select opt in $OPTIONS; do
 	elif [ "$opt" = "Rain" ]; then
 		rain
 		exit
+	elif [ "$opt" = "Player" ]; then
+		reveal
+		exit
 	elif [ "$opt" = "Reveal" ]; then
 		reveal
 		exit
