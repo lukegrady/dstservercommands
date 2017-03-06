@@ -206,8 +206,14 @@ select stat in $STATS; do
 done
 }
 
+function reveal {
+$SCREENCMD 'local w,h = TheWorld.Map:GetSize();for _,v in pairs(AllPlayers) do for x=-w*4,w*4,35 do for y=-h*4,h*4,35 do v.player_classified.MapExplorer:RevealArea(x,0,y) end end end^M'
+
+return 0
+}
+
 function mainMenu {
-OPTIONS="Give Season Regen Rain Player Quit"
+OPTIONS="Give Season Regen Rain Player Reveal Quit"
 select opt in $OPTIONS; do
 	if [ "$opt" = "Give" ]; then
 		give
@@ -220,6 +226,9 @@ select opt in $OPTIONS; do
 		exit
 	elif [ "$opt" = "Rain" ]; then
 		rain
+		exit
+	elif [ "$opt" = "Reveal" ]; then
+		reveal
 		exit
 	elif [ "$opt" = "Quit" ]; then
 		exit 0
