@@ -1,2 +1,4 @@
 TODO:
 Add command line options instead of relying on menu (ex: "bash commands.bash give axe 1 1")
+
+Mar 9, 2017 - rewrote this in Python but haven't tested it at all..need to test! 
