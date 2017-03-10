@@ -2,4 +2,3 @@ TODO:
 Add command line options instead of relying on menu (ex: "bash commands.bash give axe 1 1")
 
 Mar 9, 2017 - rewrote this in Python but haven't tested it at all..need to test! 
-Mar 9, 2017 (later) - wtf do i have two separate functions for get_qty and get_pct - make that shit the same!

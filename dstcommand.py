@@ -8,7 +8,7 @@ Use this program to interface with a dedicated DST server
 import subprocess
 import sys
 
-def get_qty(user_prompt=None, def_qty=None, min_qty=None, max_qty=None):
+def get_val(user_prompt=None, def_val=None, min_val=None, max_val=None):
     '''Query user for quantity (integer)
 
     Ask user for quantity
@@ -26,60 +26,26 @@ def get_qty(user_prompt=None, def_qty=None, min_qty=None, max_qty=None):
     Raises:
         ValueError: If value entered is not an integer representation
     '''
-    if def_qty:
-        try:
-            int(def_qty)
-        except ValueError:
-            print('Default value is invalid - expected an integer.')
-            sys.exit(1)
-
     if not user_prompt:
-        user_prompt = 'Enter quantity [default=' + def_qty + ']: '
-
-    qty = input(user_prompt)
-
-    if not qty:
-        if def_qty:
-            qty = def_qty
+        if def_val:
+            user_prompt = 'Enter quantity [default=' + def_val + ']: '
         else:
-            print('No quantity entered')
-            sys.exit(1)
+            user_prompt = 'Enter quantity: '
 
-    try:
-        int(qty)
-        if min_qty:
-            int(min_qty)
-        if max_qty:
-            int(max_qty)
-    except ValueError:
-        print('Invalid value - was expecting an integer.')
-        sys.exit(1)
+    val = input(user_prompt)
 
-    if min_qty > qty:
-        print('Invalid quantity: User-entered {} is greater '
-              'than minimum {}'.format(qty, min_qty))
-    if max_qty < qty:
+    if not val:
+        if def_val:
+            val = def_val
+
+    if min_val > val:
+        print('Invalid value: User-entered {} is greater '
+              'than minimum {}'.format(val, min_val))
+    if max_val < val:
         print('Invalid quantity: User-entered {} is less than '
-              'than maximum {}'.format(qty, max_qty))
+              'than maximum {}'.format(val, max_val))
 
-    return qty
-
-def get_item():
-    '''Query user for item
-
-    Ask user for item (usually to be given via give_item() function)
-
-    Returns:
-        A string item, hopefully a valid DST prefab (although I do not
-            validate this
-    '''
-    item = input('Enter item: ')
-
-    if not item:
-        print('Error: Invalid Item: No Item Entered')
-        sys.exit(1)
-
-    return item
+    return val
 
 def give_item(item=None, player_num=None, qty=None):
     '''Give player an item
@@ -94,13 +60,12 @@ def give_item(item=None, player_num=None, qty=None):
     Returns:
         command: string to be passed to screen session running DST server
     '''
-
     if not item:
-        item = get_item()
+        item = get_val()
     if not player_num:
-        player_num = str(get_qty('Enter player number (default=1): ', 1))
+        player_num = str(int(get_val('Enter player number (default=1): ', 1)))
     if not qty:
-        qty = str(get_qty())
+        qty = str(int(get_val()))
 
     command = ('c_select(AllPlayers[' + player_num + ']) c_give(\"' + item +
                '\"' + qty + ')^M')
@@ -162,7 +127,7 @@ def toggle_god_mode(player_num=None):
         command string to toggle god mode for player
     '''
     if not player_num:
-        player_num = str(get_qty('Enter player number (default=1): ', 1))
+        player_num = str(int(get_val('Enter player number (default=1): ', 1)))
 
     return 'c_select(AllPlayers[' + player_num + '] c_godmode()^M'
 
@@ -176,51 +141,9 @@ def toggle_super_god_mode(player_num=None):
         command string to toggle super god mode for player
     '''
     if not player_num:
-        player_num = str(get_qty('Enter player number (default=1): '), 1)
+        player_num = str(int(get_val('Enter player number (default=1): '), 1))
 
     return 'c_select(AllPlayers[' + player_num + '] c_supergodmode()^M'
-
-def get_pct(user_prompt=None, def_pct=1.0, min_pct=None, max_pct=None):
-    '''Get percentage from user
-
-    Prompts user to enter a percent and validates it
-
-    Args:
-        user_prompt: string (optional) that is displayed to user before prompt
-        def_pct: float (optional, default = 1.0) default percent if user
-            does not provide input
-        min_pct: float (optional) used to validate user input
-        max_pct: float (optional) used to validate user input
-
-    Returns:
-        percentage as a float, 1.00 represents 100%
-    '''
-    if not user_prompt:
-        user_prompt = 'Enter a percentage (1.0 is 100%, 100 is 1,000%): '
-
-    pct = input(user_prompt)
-
-    if not pct:
-        pct = def_pct
-
-    try:
-        float(pct)
-        if min_pct:
-            float(min_pct)
-        if max_pct:
-            float(max_pct)
-    except ValueError:
-        print('Invalid entry - was expecting a floating point.')
-        sys.exit(1)
-
-    if min_pct > pct:
-        print('Invalid percent: User-entered {:2%} is greater than'
-              'minimum {:2%}'.format(pct, min_pct))
-    if max_pct < pct:
-        print('Invalid percent: User-entered {:2%} is less than than'
-              'maximum {:2%}'.format(pct, max_pct))
-
-    return pct
 
 def set_health(player_num=None, health_pct=None):
     '''Set player health to given percent of max
@@ -235,11 +158,11 @@ def set_health(player_num=None, health_pct=None):
         command string to set player health
     '''
     if not player_num:
-        player_num = str(get_qty('Enter player number (default=1): '))
+        player_num = str(int(get_val('Enter player number (default=1): ')))
 
     if not health_pct:
-        health_pct = str(get_pct('Enter % of max health [1.0 = 100%]: ', 1.0))
-
+        health_pct = str(float(get_val('Enter % of max health',
+                                       '[1.0 = 100%]: ', 1.0)))
 
 def main():
     '''Main function
