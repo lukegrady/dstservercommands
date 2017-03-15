@@ -14,14 +14,21 @@ def get_prefabs():
     '''Scrape Don't Starve wiki for prefab codes
 
     Returns:
-        List of prefabs
+        List of prefab tuples (link, name, spawn_code)
     '''
 
     url = 'http://dontstarve.wikia.com/wiki/Console/Prefab_List'
 
     response = requests.get(url)
     raw_text = response.text
-    matches = re.findall(r'</td><td>(\w+)\n', raw_text)
+
+    # TODO - fix this so it finds ALL prefabs
+
+    # This regex isn't perfect but it works for most everything
+    # A notable place where it DOESN'T work is for Shipwrecked prefabs
+    pattern = (r'^<td class="xl65" style="height: 20px; height:15.0pt">'
+         '(?:<a href="(.+)" title.+>)?([\s\w]+)(?:</a>)?\n</td><td>(\w+)$')
+    matches = re.findall(pattern, raw_text, flags=re.MULTILINE)
 
     prefabs = []
     for match in matches:
