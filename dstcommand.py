@@ -7,6 +7,28 @@ Use this program to interface with a dedicated DST server
 
 import subprocess
 import sys
+import re
+import requests
+
+def get_prefabs():
+    '''Scrape Don't Starve wiki for prefab codes
+
+    Returns:
+        List of prefabs
+    '''
+
+    url = 'http://dontstarve.wikia.com/wiki/Console/Prefab_List'
+
+    response = requests.get(url)
+    raw_text = response.text
+    matches = re.findall(r'</td><td>(\w+)\n', raw_text)
+
+    prefabs = []
+    for match in matches:
+        prefabs.append(match)
+
+    return prefabs
+
 
 def get_val(user_prompt=None, def_val=None, min_val=None, max_val=None):
     '''Query user for quantity (integer)
@@ -47,6 +69,7 @@ def get_val(user_prompt=None, def_val=None, min_val=None, max_val=None):
 
     return val
 
+
 def give_item(item=None, player_num=None, qty=None):
     '''Give player an item
 
@@ -72,6 +95,7 @@ def give_item(item=None, player_num=None, qty=None):
 
     return command
 
+
 def set_season(season=None):
     '''Set season
 
@@ -96,12 +120,14 @@ def set_season(season=None):
 
     return command
 
+
 def regenerate():
     '''Regenerate world
 
     Returns: command string to reset world
     '''
     return 'c_regenerateworld()^M'
+
 
 def turn_rain_on():
     '''Make it start raining
@@ -110,12 +136,14 @@ def turn_rain_on():
     '''
     return 'TheWorld:PushEvent(\"ms_forceprecipitation\")^M'
 
+
 def turn_rain_off():
     '''Make it stop raining
 
     Returns: command string to make it stop raining
     '''
     return 'TheWorld:PushEvent(\"ms_forceprecipitation\", false)^M'
+
 
 def toggle_god_mode(player_num=None):
     '''Toggle god mode for a user
@@ -131,6 +159,7 @@ def toggle_god_mode(player_num=None):
 
     return 'c_select(AllPlayers[' + player_num + '] c_godmode()^M'
 
+
 def toggle_super_god_mode(player_num=None):
     '''Toggle super god mode for a user
 
@@ -144,6 +173,7 @@ def toggle_super_god_mode(player_num=None):
         player_num = str(int(get_val('Enter player number (default=1): '), 1))
 
     return 'c_select(AllPlayers[' + player_num + '] c_supergodmode()^M'
+
 
 def set_health(player_num=None, health_pct=None):
     '''Set player health to given percent of max
@@ -164,6 +194,8 @@ def set_health(player_num=None, health_pct=None):
         health_pct = str(float(get_val('Enter % of max health',
                                        '[1.0 = 100%]: ', 1.0)))
 
+
+
 def main():
     '''Main function
 
@@ -183,8 +215,10 @@ def main():
 
     subprocess.call(args)
 
+
 if __name__ == '__main__':
     main()
+
 
 def test_script():
     '''Test this program
@@ -192,8 +226,4 @@ def test_script():
     A bunch of test scripts for these functions
     '''
     pass
-
-
-
-
 
