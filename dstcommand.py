@@ -75,14 +75,13 @@ def get_val(user_prompt=None, def_val=None, min_val=None, max_val=None):
     return val
 
 
-def give_item(item=None, player_num=None, qty=None):
+def give_item(item=None, qty=None):
     '''Give player an item
 
     Builds command for remote server to give players an item
 
     Args:
         item: string (optional). item to give (look up DST prefabs for list)
-        player_num: string (optional). player number of receiver
         qty: string (optional). number/quantity of items to give
 
     Returns:
@@ -90,13 +89,10 @@ def give_item(item=None, player_num=None, qty=None):
     '''
     if not item:
         item = get_val()
-    if not player_num:
-        player_num = str(int(get_val('Enter player number (default=1): ', 1)))
     if not qty:
         qty = str(int(get_val()))
 
-    command = ('c_select(AllPlayers[' + player_num + ']) c_give(\"' + item +
-               '\"' + qty + ')^M')
+    command = ('c_give(\"' + item + '\"' + qty + ')^M')
 
     return command
 
@@ -150,41 +146,28 @@ def turn_rain_off():
     return 'TheWorld:PushEvent(\"ms_forceprecipitation\", false)^M'
 
 
-def toggle_god_mode(player_num=None):
-    '''Toggle god mode for a user
-
-    Args:
-        player_num: string (optional). player number of receiver
+def toggle_god_mode():
+    '''Toggle god mode for selected player
 
     Returns:
         command string to toggle god mode for player
     '''
-    if not player_num:
-        player_num = str(int(get_val('Enter player number (default=1): ', 1)))
-
-    return 'c_select(AllPlayers[' + player_num + '] c_godmode()^M'
+    return 'c_godmode()^M'
 
 
-def toggle_super_god_mode(player_num=None):
-    '''Toggle super god mode for a user
-
-    Args:
-        player_num: string (optional). player number of receiver
+def toggle_super_god_mode():
+    '''Toggle super god mode for selected user
 
     Returns:
         command string to toggle super god mode for player
     '''
-    if not player_num:
-        player_num = str(int(get_val('Enter player number (default=1): '), 1))
-
-    return 'c_select(AllPlayers[' + player_num + '] c_supergodmode()^M'
+    return 'c_supergodmode()^M'
 
 
-def set_health(player_num=None, health_pct=None):
+def set_health(health_pct=None):
     '''Set player health to given percent of max
 
     Args:
-        player_num: string (optional). player number of receiver
         health_pct: float (optional). percent (between 0 and 1) that
             will be multiplied to player max health stat to determine
             new level of health
@@ -192,69 +175,49 @@ def set_health(player_num=None, health_pct=None):
     Returns:
         command string to set player health
     '''
-    if not player_num:
-        player_num = str(int(get_val('Enter player number (default=1): ')))
-
     if not health_pct:
         health_pct = str(float(get_val('Enter % of max health',
                                        '[1.0 = 100%]: ', 1.0)))
+    return 'c_sethealth(' + health_pct + ')^M')
 
-    command = ('c_select(AllPlayers[' + player_num +
-               '] c_sethealth(' + health_pct + ')^M')
-
-    return command
-
-def set_speedmult(player_num=None, multiplier=None):
+def set_speedmult(multiplier=None):
     '''Set player speed multiplier
 
     Args:
-        player_num: string (optional). player number of receiver
         multiplier: int (optional). multiplier (between 1 and 10) that
             will be applied to player speed
 
     Returns:
         command string to set player speed multiplier
     '''
-    if not player_num:
-        player_num = str(int(get_val('Enter player number (default=1): ')))
-
     if not multiplier:
         multiplier = str(int(get_val('Enter speed multiplier [1 - 20]'
                                      '(default=1): ', 1)))
 
-    command = ('c_select(AllPlayers[' + player_num +
-               '] c_speedmult(' + multiplier + ')^M')
+    return ('c_speedmult(' + multiplier + ')^M')
 
-    return command
-
-def kill_player(player_num=None):
+def kill_player(player_name):
     '''Kill specified player
 
     Args:
-        player_num: string (optional). player number to kill
+        player_name: string (optional). player name to kill
 
     Returns:
         command string to kill player
     '''
-    if not player_num:
-        player_num = str(int(get_val('Enter player number (default=1): ')))
+    return "UserToPlayer('" + player_name + "'):PushEvent('death')^M"
 
-    return "AllPlayers[" + player_num + "]:PushEvent('death')^M"
-
-def despawn_player(player_num=None):
+def despawn_player(player_name):
     '''Despawn specified player
 
     Args:
-        player_num: string (optional). player number to despawn
+        player_name: string (optional). player to despawn
 
     Returns:
         command string to despawn player (and return them to character select
         screen
     '''
-    if not player_num:
-        player_num = str(int(get_val('Enter player number (default=1): ')))
-
-    return 'c_despawn(AllPlayers[' + player_num + '])^M'
+    return "c_despawn(UserToPlayer('" + player_name + "')^M"
 
 def main():
     '''Main function
@@ -278,10 +241,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-def test_script():
-    '''Test this program
-
-    A bunch of test scripts for these functions
-    '''
-    pass
