@@ -16,18 +16,16 @@ def get_prefabs():
     Returns:
         List of prefab tuples (link, name, spawn_code)
     '''
-
     url = 'http://dontstarve.wikia.com/wiki/Console/Prefab_List'
 
     response = requests.get(url)
     raw_text = response.text
 
-    # TODO - fix this so it finds ALL prefabs
-
     # This regex isn't perfect but it works for most everything
     # A notable place where it DOESN'T work is for Shipwrecked prefabs
     pattern = (r'^<td class="xl65" style="height: 20px; height:15.0pt">'
-         '(?:<a href="(.+)" title.+>)?([\s\w]+)(?:</a>)?\n</td><td>(\w+)$')
+               r'(?:<a href="(.+)" title.+>)?([\s\w]+)(?:</a>)?\n</td>'
+               r'<td>(\w+)$')
     matches = re.findall(pattern, raw_text, flags=re.MULTILINE)
 
     prefabs = []
@@ -201,7 +199,62 @@ def set_health(player_num=None, health_pct=None):
         health_pct = str(float(get_val('Enter % of max health',
                                        '[1.0 = 100%]: ', 1.0)))
 
+    command = ('c_select(AllPlayers[' + player_num +
+               '] c_sethealth(' + health_pct + ')^M')
 
+    return command
+
+def set_speedmult(player_num=None, multiplier=None):
+    '''Set player speed multiplier
+
+    Args:
+        player_num: string (optional). player number of receiver
+        multiplier: int (optional). multiplier (between 1 and 10) that
+            will be applied to player speed
+
+    Returns:
+        command string to set player speed multiplier
+    '''
+    if not player_num:
+        player_num = str(int(get_val('Enter player number (default=1): ')))
+
+    if not multiplier:
+        multiplier = str(int(get_val('Enter speed multiplier [1 - 20]'
+                                     '(default=1): ', 1)))
+
+    command = ('c_select(AllPlayers[' + player_num +
+               '] c_speedmult(' + multiplier + ')^M')
+
+    return command
+
+def kill_player(player_num=None):
+    '''Kill specified player
+
+    Args:
+        player_num: string (optional). player number to kill
+
+    Returns:
+        command string to kill player
+    '''
+    if not player_num:
+        player_num = str(int(get_val('Enter player number (default=1): ')))
+
+    return "AllPlayers[" + player_num + "]:PushEvent('death')^M"
+
+def despawn_player(player_num=None):
+    '''Despawn specified player
+
+    Args:
+        player_num: string (optional). player number to despawn
+
+    Returns:
+        command string to despawn player (and return them to character select
+        screen
+    '''
+    if not player_num:
+        player_num = str(int(get_val('Enter player number (default=1): ')))
+
+    return 'c_despawn(AllPlayers[' + player_num + '])^M'
 
 def main():
     '''Main function
@@ -222,7 +275,6 @@ def main():
 
     subprocess.call(args)
 
-
 if __name__ == '__main__':
     main()
 
@@ -233,4 +285,3 @@ def test_script():
     A bunch of test scripts for these functions
     '''
     pass
-
